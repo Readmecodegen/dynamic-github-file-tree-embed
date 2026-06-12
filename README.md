@@ -7,7 +7,7 @@
 
 Tired of manually typing out ASCII characters to show your project's folder structure in your README? **Dynamic GitHub File Tree Embed** fetches your repository's structure in real-time and renders a pixel-perfect, highly customizable SVG image that you can drop directly into any Markdown file!
 
----
+![Dynamic File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&branch=main&showHeader=true&showBorder=true&style=emoji)
 
 ## ✨ Features
 
