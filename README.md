@@ -1,5 +1,3 @@
-# dynamic-github-file-tree-embed by Readmecodegen
-
 # 🌳 Dynamic GitHub File Tree Embed
 
 > Instantly generate beautiful, live-updating SVG file trees for your GitHub READMEs without any manual formatting.
@@ -50,7 +48,7 @@ Customize your file tree by adding query parameters to the URL.
 | `showHeader` | `boolean` | `false` | If `true`, fetches and displays the owner's GitHub avatar and repository name at the top. |
 | `showBorder` | `boolean` | `false` | If `true`, draws a neat 1px border around the entire tree. |
 | `style` | `string` | `ascii` | `ascii` (default icons) or `emoji` (rendered with GitHub emojis). |
-| `fontSize` | `number` | `18` | Base font size for the rendered text. |
+| `fontSize` | `number` | `16` | Base font size for the rendered text. |
 
 ---
 
@@ -90,5 +88,3 @@ Keep it high-level by stripping out files entirely.
 
 Built with ❤️ by the ReadmeCodeGen team.
 [Generate your own visually stunning READMEs at readmecodegen.com!](https://readmecodegen.vercel.app)
-
-
