@@ -77,6 +77,26 @@ Keep it high-level by stripping out files entirely.
 
 ---
 
+## ⚡ Caching & Instant Updates (Webhooks)
+
+To protect GitHub API limits, our servers **automatically cache your file tree for 1 hour**. This means that if you add or delete a file in your repository, it may take up to an hour for your README image to update.
+
+**Want instant updates?** You do NOT need to enable any special toggles! Just set up a GitHub Webhook on your repository to instantly clear the cache whenever you push code.
+
+### How to set up the Webhook (Pros & Cons)
+**Pros**: Your README image will update instantly when you push code. Zero API limits hit.
+**Cons**: Requires 1 minute to configure in your GitHub settings.
+
+1. Go to your GitHub Repository ➔ **Settings** ➔ **Webhooks** ➔ **Add webhook**.
+2. **Payload URL**: `https://readmecodegen.com/api/webhook/github-tree`
+3. **Content type**: `application/json`
+4. **Which events**: Just the `push` event.
+5. Click **Add webhook**.
+
+That's it! Now, every time you push code, GitHub pings our server, and we instantly wipe the 1-hour cache for your specific repository. The very next person to view your README will see the freshly generated SVG!
+
+---
+
 ## ⚙️ How It Works
 
 1. You embed a standard Markdown image link in your `README.md`.
@@ -86,5 +106,21 @@ Keep it high-level by stripping out files entirely.
 
 ---
 
+## 🤝 Contributing
+
+We would love your help to make this tool even better! 
+If you find a bug, have a feature request, or just want to contribute:
+- **[Open an Issue](https://github.com/Sonucs12/readmecodegen/issues)**: Report bugs or suggest new features.
+- **Fork the Repo**: Feel free to fork the repository and submit a Pull Request!
+- **⭐️ Star the Project**: If you use this tool in your README, please consider giving the repository a star to support its development!
+
+---
+
+## 🌐 Try the Live Builder Tool
+
+Don't want to write the URL parameters manually? We have a visual builder!
+
+👉 **[Try the Dynamic File Tree Embed Builder here!](https://readmecodegen.com/file-tree/dynamic-github-file-tree-embed)**
+
 Built with ❤️ by the ReadmeCodeGen team.
-[Generate your own visually stunning READMEs at readmecodegen.com!](https://readmecodegen.vercel.app)
+[Generate your own visually stunning READMEs at readmecodegen.com!](https://readmecodegen.com)
