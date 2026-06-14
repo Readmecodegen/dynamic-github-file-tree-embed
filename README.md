@@ -7,7 +7,7 @@
 
 Tired of manually typing out ASCII characters to show your project's folder structure in your README? **Dynamic GitHub File Tree Embed** fetches your repository's structure in real-time and renders a pixel-perfect, highly customizable SVG image that you can drop directly into any Markdown file!
 
-![Dynamic File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&branch=main&showHeader=true&showBorder=true&style=emoji)
+---
 
 ## ✨ Features
 
@@ -15,6 +15,7 @@ Tired of manually typing out ASCII characters to show your project's folder stru
 - **Auto-Theming**: Supports transparent backgrounds that automatically switch between Dark Mode and Light Mode text based on the viewer's system OS.
 - **Highly Customizable**: Show/hide hidden files, limit depth, exclude specific folders (like `node_modules`), or show only directories.
 - **Premium Design**: Beautiful, responsive layout with native Lucide icons for files and folders.
+- **File Type Icons**: Color-coded, language-specific icons for 80+ file types (JS, TS, React, Python, Go, Rust, and more).
 - **Zero Dependencies**: Just paste a single `![alt](url)` markdown image link into your README.
 
 ---
@@ -47,8 +48,17 @@ Customize your file tree by adding query parameters to the URL.
 | `transparentBg`| `boolean`| `false` | If `true`, removes the solid background. Text color dynamically adapts to the viewer's OS! |
 | `showHeader` | `boolean` | `false` | If `true`, fetches and displays the owner's GitHub avatar and repository name at the top. |
 | `showBorder` | `boolean` | `false` | If `true`, draws a neat 1px border around the entire tree. |
-| `style` | `string` | `ascii` | `ascii` (default icons) or `emoji` (rendered with GitHub emojis). |
+| `style` | `string` | `ascii` | `ascii` for connector lines only (no icons), or `emoji` to render file & folder icons. |
+| `showFileIcons` | `boolean` | `false` | If `true`, replaces the generic file icon with a language/type-specific colored icon (e.g., React atom for `.tsx`, Python snake for `.py`). See note below. |
 | `fontSize` | `number` | `16` | Base font size for the rendered text. |
+
+> [!IMPORTANT]
+> **`showFileIcons` requires `style=emoji`.**
+> File icons (both the generic file icon and the specific language icons) are only rendered when `style=emoji` is set.
+> In the default `ascii` mode, the tree uses connector lines (`├──`, `└──`) with **no icons at all**.
+>
+> ✅ Correct: `?style=emoji&showFileIcons=true`
+> ❌ Has no effect: `?showFileIcons=true` (ascii mode — icons are suppressed)
 
 ---
 
@@ -74,6 +84,80 @@ Keep it high-level by stripping out files entirely.
 ```markdown
 ![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=your/repo&theme=light&foldersOnly=true)
 ```
+
+### 4. Emoji Mode with File Type Icons
+Show color-coded language icons for every file.
+
+```markdown
+![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=your/repo&style=emoji&showFileIcons=true)
+```
+
+---
+
+## 🖼️ Supported File Type Icons
+
+When `style=emoji&showFileIcons=true` is enabled, the following file types render with their official brand colors:
+
+| Category | Extensions | Color |
+|----------|------------|-------|
+| **JavaScript** | `.js` | Yellow badge `#F7DF1E` |
+| **TypeScript** | `.ts` | Blue badge `#3178C6` |
+| **React JSX** | `.jsx` | Cyan atom icon `#61DAFB` |
+| **React TSX** | `.tsx` | Cyan atom icon `#61DAFB` |
+| **Vue** | `.vue` | Green chevron `#41B883` |
+| **Python** | `.py` | Snake icon `#3776AB` |
+| **JSON** | `.json` | Document outline with `{}` `#EAB308` |
+| **HTML** | `.html` | HTML5 shield `#E34F26` |
+| **CSS** | `.css` | CSS3 shield `#1572B6` |
+| **Markdown** | `.md` | M↓ block icon |
+| **Images** | `.jpg`, `.png`, `.svg` | Mountain/landscape icon `#10B981` |
+
+Any file type **not** in this list will fall back to the default generic file icon — it will never appear empty.
+
+---
+
+## ➕ Adding More File Type Icons
+
+Want to add an icon for a file type that's missing? It's a single-line change!
+
+All icons live in [`src/app/api/file-tree-embed/file-icons.ts`](src/app/api/file-tree-embed/file-icons.ts).
+
+### How it works
+
+The file exports a plain `FILE_ICONS_MAP` object. Each key is a **lowercase file extension**, and the value is a **raw SVG string** that will be rendered inside a `0 0 24 24` viewBox.
+
+### Step-by-step
+
+1. Open `file-icons.ts`.
+2. Add a new entry to `FILE_ICONS_MAP` using the file extension as the key.
+3. Set the value to the inner SVG content (no `<svg>` wrapper needed — just paths, rects, circles, text, etc.).
+4. Save the file — **no other changes needed.** The renderer picks it up automatically.
+
+### Examples
+
+**Colored badge with abbreviation** (easiest pattern for new languages):
+```typescript
+// A cyan square badge with "GO" text — for .go files
+go: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="#00ADD8"/>' +
+    '<text x="12" y="16.5" font-size="11" font-family="sans-serif" font-weight="bold" fill="white" text-anchor="middle">GO</text>',
+```
+
+**Custom SVG path** (for logos with a distinctive shape):
+```typescript
+// Rust crab-wheel logo for .rs files
+rs: '<path d="M12 2 ..." fill="#CE422B"/>',
+```
+
+**Image/document style** (outline with inner detail):
+```typescript
+// JSON document outline with {} label
+json: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16..." fill="none" stroke="#EAB308" stroke-width="2"/>' +
+      '<text x="12" y="16" font-size="6" font-family="monospace" fill="#EAB308" text-anchor="middle">{}</text>',
+```
+
+> [!TIP]
+> Keep the viewBox coordinate space in mind: icons render at `0 0 24 24`. Coordinates like `x="3"` and `width="18"` leave a 3-unit margin on each side, which looks best at small sizes.
+
 
 ---
 
@@ -116,6 +200,47 @@ If you find a bug, have a feature request, or just want to contribute:
 
 ---
 
+## 🎯 Wanted: More File Icons!
+
+We currently have icons for **12 file types**. There are hundreds of languages and tools out there — and we'd love your help growing this list!
+
+### Missing icons we'd love to see
+
+| Extension | Language / Tool |
+|-----------|----------------|
+| `.go` | Go |
+| `.rs` | Rust |
+| `.rb` | Ruby |
+| `.php` | PHP |
+| `.java` | Java |
+| `.kt` | Kotlin |
+| `.swift` | Swift |
+| `.dart` | Dart |
+| `.cs` | C# |
+| `.cpp` | C++ |
+| `.sh` | Shell / Bash |
+| `.yaml` / `.yml` | YAML |
+| `.toml` | TOML |
+| `.dockerfile` | Docker |
+| `.tf` | Terraform |
+| `.graphql` | GraphQL |
+| `.sql` | SQL |
+| `.zip` / `.tar` | Archives |
+| ... and many more! | |
+
+### How to contribute an icon
+
+1. Fork the repo and open [`src/app/api/file-tree-embed/file-icons.ts`](src/app/api/file-tree-embed/file-icons.ts).
+2. Add one line to `FILE_ICONS_MAP` — the key is the extension, the value is raw SVG inner content (24×24 viewBox).
+3. **Preview your icon** — open [`icon-preview.html`](icon-preview.html) directly in your browser (no server needed!), paste your SVG string, and see it rendered at all sizes and in both light/dark mode before submitting.
+4. Open a Pull Request with a title like `feat: add .go icon` — we'll merge it fast!
+
+> [!NOTE]
+> Even a simple **colored badge with the extension abbreviation** is a great contribution. Perfect doesn't have to be the enemy of done!
+
+---
+
+
 ## 🌐 Try the Live Builder Tool
 
 Don't want to write the URL parameters manually? We have a visual builder!
@@ -124,3 +249,5 @@ Don't want to write the URL parameters manually? We have a visual builder!
 
 Built with ❤️ by the ReadmeCodeGen team.
 [Generate your own visually stunning READMEs at readmecodegen.com!](https://readmecodegen.com)
+
+
