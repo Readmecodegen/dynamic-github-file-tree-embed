@@ -15,6 +15,9 @@ If you maintain open-source projects, you've probably spent time manually typing
 
 Instead of typing out files manually, you paste one image link. We fetch your repository's actual structure in real-time and render a pixel-perfect, highly customizable file tree. When you push new code to GitHub, your README updates automatically!
 
+<img width="865" height="749" alt="image" src="https://github.com/user-attachments/assets/5ffd4a3c-8b7b-441f-bea5-c50c2cb4e66d" />
+
+
 ## 📖 Table of Contents
 
 - [What is this and what problem does it solve?](#what-is-this-and-what-problem-does-it-solve)
