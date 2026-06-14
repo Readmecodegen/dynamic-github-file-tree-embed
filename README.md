@@ -5,7 +5,7 @@
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Built_with-Next.js-black?logo=next.js)](https://nextjs.org/)
 
-[![Dynamic File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&branch=main&showHeader=true&showBorder=true&showFileIcons=true&style=emoji)](https://github.com/Readmecodegen/dynamic-github-file-tree-embed)
+[![Dynamic File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&branch=main&showHeader=true&showFileIcons=true&style=emoji)](https://github.com/Readmecodegen/dynamic-github-file-tree-embed)
 
 ## What is this and what problem does it solve?
 
@@ -22,10 +22,10 @@ Instead of typing out files manually, you paste one image link. We fetch your re
 - [Quick Start](#-quick-start)
 - [Configuration & Parameters](#️-configuration--parameters)
 - [Examples](#-examples)
-  - [1. Transparent Adaptive Mode](#1-transparent-adaptive-mode-recommended)
-  - [2. Hide Clutter & Limit Depth](#2-hide-clutter--limit-depth)
-  - [3. Light Mode, Folders Only](#3-light-mode-folders-only)
-  - [4. Emoji Mode with File Type Icons](#4-emoji-mode-with-file-type-icons)
+  - [1. The "Everything" View (Emoji Icons + Header + Border)](#1-the-everything-view-emoji-icons--header--border)
+  - [2. Transparent Adaptive Mode](#2-transparent-adaptive-mode)
+  - [3. Light Mode, Folders Only (High-Level View)](#3-light-mode-folders-only-high-level-view)
+  - [4. Raw ASCII Mode + Hidden Files](#4-raw-ascii-mode--hidden-files)
 - [Supported File Type Icons](#️-supported-file-type-icons)
 - [Adding More File Type Icons](#-adding-more-file-type-icons)
   - [How it works](#how-it-works)
@@ -86,32 +86,42 @@ Customize your file tree by adding query parameters to the URL.
 
 ## 🎨 Examples
 
-### 1. Transparent Adaptive Mode (Recommended)
-This tree removes the background color and intelligently swaps its text color based on the reader's system theme.
+Here are some real examples of how the file tree looks with different parameters. We use this very repository (`Readmecodegen/dynamic-github-file-tree-embed`) to generate these live previews!
+
+### 1. The "Everything" View (Emoji Icons + Header + Border)
+This example turns on the repository header, the outer border, bumps the font size up to `22`, and enables the premium file-type icons.
+
+[![Example 1](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&branch=main&showHeader=true&showBorder=true&showFileIcons=true&style=emoji&fontSize=22)](https://github.com/Readmecodegen/dynamic-github-file-tree-embed)
 
 ```markdown
-![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=your/repo&transparentBg=true)
+![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen/dynamic-github-file-tree-embed&branch=main&showHeader=true&showBorder=true&showFileIcons=true&style=emoji&fontSize=22)
 ```
 
-### 2. Hide Clutter & Limit Depth
-Perfect for large mono-repos where you only want to show the top-level architecture.
+### 2. Transparent Adaptive Mode
+This tree removes the background color entirely. The text color automatically swaps based on whether the reader is using Dark Mode or Light Mode on their system.
+
+[![Example 2](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&transparentBg=true)](https://github.com/Readmecodegen/dynamic-github-file-tree-embed)
 
 ```markdown
-![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=your/repo&maxDepth=2&exclude=node_modules,public,dist)
+![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen/dynamic-github-file-tree-embed&transparentBg=true)
 ```
 
-### 3. Light Mode, Folders Only
-Keep it high-level by stripping out files entirely.
+### 3. Light Mode, Folders Only (High-Level View)
+Perfect for massive repositories. This example uses the `light` theme, limits the folder depth to `2`, excludes specific folders, and completely hides individual files to just show the architecture.
+
+[![Example 3](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&theme=light&maxDepth=2&foldersOnly=true&exclude=node_modules,.git,public)](https://github.com/Readmecodegen/dynamic-github-file-tree-embed)
 
 ```markdown
-![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=your/repo&theme=light&foldersOnly=true)
+![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen/dynamic-github-file-tree-embed&theme=light&maxDepth=2&foldersOnly=true&exclude=node_modules,.git,public)
 ```
 
-### 4. Emoji Mode with File Type Icons
-Show color-coded language icons for every file.
+### 4. Raw ASCII Mode + Hidden Files
+This is the default minimalist look. It shows standard ASCII connector lines instead of icons. We've also turned on `includeHidden` so you can see hidden dotfiles like `.gitignore` or `.env`.
+
+[![Example 4](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&style=ascii&includeHidden=true)](https://github.com/Readmecodegen/dynamic-github-file-tree-embed)
 
 ```markdown
-![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=your/repo&style=emoji&showFileIcons=true)
+![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen/dynamic-github-file-tree-embed&style=ascii&includeHidden=true)
 ```
 
 ## 🖼️ Supported File Type Icons
