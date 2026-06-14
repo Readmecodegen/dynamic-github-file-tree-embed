@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { fetchGitHub } from "@/lib/github-fetch";
 import { getToken } from "next-auth/jwt";
 import { generateFileTreeSvg } from "./svg-renderer";
+import crypto from "crypto";
 
 // nodejs runtime required for next-auth getToken()
 export const runtime = "nodejs";
@@ -25,15 +26,17 @@ export async function GET(req: NextRequest) {
     const transparentBg = searchParams.get("transparentBg") === "true";
     const showHeader    = searchParams.get("showHeader") === "true";
     const showBorder    = searchParams.get("showBorder") === "true";
+    const showFileIcons = searchParams.get("showFileIcons") === "true";
 
     if (!repoParam?.includes("/")) {
       return new Response("Missing or invalid repo parameter", { status: 400 });
     }
 
-    const [owner, repoName] = repoParam.split("/");
+    const [ownerRaw, repoNameRaw] = repoParam.split("/");
+    const owner = ownerRaw.toLowerCase();
+    const repoName = repoNameRaw.toLowerCase();
     const skippedIds = new Set(excludeStr.split(",").filter(Boolean));
 
-    // fetch repo info only when needed
     let resolvedBranch = branch;
     let repoInfo: Record<string, any> | null = null;
 
@@ -53,7 +56,6 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // embed avatar as base64 so the svg is self-contained
     let avatarBase64 = "";
     if (showHeader && repoInfo?.owner?.avatar_url) {
       try {
@@ -64,7 +66,6 @@ export async function GET(req: NextRequest) {
           avatarBase64 = `data:${mime};base64,${buf.toString("base64")}`;
         }
       } catch {
-        //svg renders fine without the avatar
       }
     }
 
@@ -94,19 +95,51 @@ export async function GET(req: NextRequest) {
       transparentBg,
       showHeader,
       showBorder,
+      showFileIcons,
       avatarBase64,
       isTruncated: treeResponse.truncated === true,
     });
+
+    // Double-layer ETag caching
+    const hash = crypto.createHash("md5").update(svgString).digest("hex");
+    const etag = `"${hash}"`;
+
+    const ifNoneMatch = req.headers.get("if-none-match");
+    if (ifNoneMatch === etag) {
+      return new Response(null, {
+        status: 304,
+        headers: {
+          "ETag": etag,
+          "Cache-Control": "no-cache, must-revalidate",
+          "Content-Type": "image/svg+xml",
+        },
+      });
+    }
 
     return new Response(svgString, {
       status: 200,
       headers: {
         "Content-Type": "image/svg+xml",
-        "Cache-Control": "no-store, max-age=0",
+        "Cache-Control": "no-cache, must-revalidate",
+        "ETag": etag,
       },
     });
   } catch (error: unknown) {
     console.error("File Tree API Error:", error instanceof Error ? error.message : error);
-    return new Response("Error generating SVG", { status: 500 });
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+   
+    const errorSvg = `<svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="#1e1e1e" rx="4" ry="4"/>
+      <text x="20" y="40" fill="#f87171" font-family="monospace" font-size="14">Error generating File Tree:</text>
+      <text x="20" y="65" fill="#fca5a5" font-family="monospace" font-size="12">${errorMsg.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</text>
+    </svg>`;
+
+    return new Response(errorSvg, { 
+      status: 200, 
+      headers: {
+        "Content-Type": "image/svg+xml",
+        "Cache-Control": "no-cache, no-store",
+      }
+    });
   }
 }
