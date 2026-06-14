@@ -5,9 +5,37 @@
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Built_with-Next.js-black?logo=next.js)](https://nextjs.org/)
 
-Tired of manually typing out ASCII characters to show your project's folder structure in your README? **Dynamic GitHub File Tree Embed** fetches your repository's structure in real-time and renders a pixel-perfect, highly customizable SVG image that you can drop directly into any Markdown file!
-
 [![Dynamic File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=Readmecodegen%2Fdynamic-github-file-tree-embed&branch=main&showHeader=true&showBorder=true&showFileIcons=true&style=emoji)](https://github.com/Readmecodegen/dynamic-github-file-tree-embed)
+
+## What is this and what problem does it solve?
+
+If you maintain open-source projects, you've probably spent time manually typing out ASCII characters (like `├──` and `└──`) to map out your folder structure in your README. It looks great right up until you add a new file, move a folder, or restructure your app. Suddenly, your hardcoded tree is out of date, and fixing it is tedious.
+
+**Dynamic GitHub File Tree Embed** solves this entirely. It is a live, auto-updating SVG image that you can drop straight into any Markdown file. 
+
+Instead of typing out files manually, you paste one image link. We fetch your repository's actual structure in real-time and render a pixel-perfect, highly customizable file tree. When you push new code to GitHub, your README updates automatically!
+
+## 📖 Table of Contents
+
+- [What is this and what problem does it solve?](#what-is-this-and-what-problem-does-it-solve)
+- [Features](#-features)
+- [Quick Start](#-quick-start)
+- [Configuration & Parameters](#️-configuration--parameters)
+- [Examples](#-examples)
+  - [1. Transparent Adaptive Mode](#1-transparent-adaptive-mode-recommended)
+  - [2. Hide Clutter & Limit Depth](#2-hide-clutter--limit-depth)
+  - [3. Light Mode, Folders Only](#3-light-mode-folders-only)
+  - [4. Emoji Mode with File Type Icons](#4-emoji-mode-with-file-type-icons)
+- [Supported File Type Icons](#️-supported-file-type-icons)
+- [Adding More File Type Icons](#-adding-more-file-type-icons)
+  - [How it works](#how-it-works)
+  - [Step-by-step](#step-by-step)
+  - [Icon Examples](#icon-examples)
+- [Caching & Instant Updates (Webhooks)](#-caching--instant-updates-webhooks)
+- [How It Works](#️-how-it-works)
+- [Contributing](#-contributing)
+- [Wanted: More File Icons!](#-wanted-more-file-icons)
+- [Try the Live Builder Tool](#-try-the-live-builder-tool)
 
 ## ✨ Features
 
@@ -18,8 +46,6 @@ Tired of manually typing out ASCII characters to show your project's folder stru
 - **File Type Icons**: Color-coded, language-specific icons for 80+ file types (JS, TS, React, Python, Go, Rust, and more).
 - **Zero Dependencies**: Just paste a single `![alt](url)` markdown image link into your README.
 
----
-
 ## 🚀 Quick Start
 
 Drop this markdown line into your GitHub README:
@@ -29,8 +55,6 @@ Drop this markdown line into your GitHub README:
 ```
 
 *(Just replace `facebook/react` with your own `owner/repo`!)*
-
----
 
 ## 🛠️ Configuration & Parameters
 
@@ -59,8 +83,6 @@ Customize your file tree by adding query parameters to the URL.
 >
 > ✅ Correct: `?style=emoji&showFileIcons=true`
 > ❌ Has no effect: `?showFileIcons=true` (ascii mode — icons are suppressed)
-
----
 
 ## 🎨 Examples
 
@@ -92,8 +114,6 @@ Show color-coded language icons for every file.
 ![My File Tree](https://www.readmecodegen.com/api/file-tree-embed?repo=your/repo&style=emoji&showFileIcons=true)
 ```
 
----
-
 ## 🖼️ Supported File Type Icons
 
 When `style=emoji&showFileIcons=true` is enabled, the following file types render with their official brand colors:
@@ -114,8 +134,6 @@ When `style=emoji&showFileIcons=true` is enabled, the following file types rende
 
 Any file type **not** in this list will fall back to the default generic file icon — it will never appear empty.
 
----
-
 ## ➕ Adding More File Type Icons
 
 Want to add an icon for a file type that's missing? It's a single-line change!
@@ -133,7 +151,7 @@ The file exports a plain `FILE_ICONS_MAP` object. Each key is a **lowercase file
 3. Set the value to the inner SVG content (no `<svg>` wrapper needed — just paths, rects, circles, text, etc.).
 4. Save the file — **no other changes needed.** The renderer picks it up automatically.
 
-### Examples
+### Icon Examples
 
 **Colored badge with abbreviation** (easiest pattern for new languages):
 ```typescript
@@ -158,9 +176,6 @@ json: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16..." fill="none" stroke="#EAB308" stro
 > [!TIP]
 > Keep the viewBox coordinate space in mind: icons render at `0 0 24 24`. Coordinates like `x="3"` and `width="18"` leave a 3-unit margin on each side, which looks best at small sizes.
 
-
----
-
 ## ⚡ Caching & Instant Updates (Webhooks)
 
 To protect GitHub API limits, our servers **automatically cache your file tree for 1 hour**. This means that if you add or delete a file in your repository, it may take up to an hour for your README image to update.
@@ -179,16 +194,12 @@ To protect GitHub API limits, our servers **automatically cache your file tree f
 
 That's it! Now, every time you push code, GitHub pings our server, and we instantly wipe the 1-hour cache for your specific repository. The very next person to view your README will see the freshly generated SVG!
 
----
-
 ## ⚙️ How It Works
 
 1. You embed a standard Markdown image link in your `README.md`.
 2. GitHub's image proxy requests the SVG from our API.
 3. We securely fetch your repository's Git Tree via the GitHub REST API.
 4. We generate a perfectly aligned, visually stunning SVG file on the fly and deliver it back to the reader!
-
----
 
 ## 🤝 Contributing
 
@@ -197,8 +208,6 @@ If you find a bug, have a feature request, or just want to contribute:
 - **[Open an Issue](https://github.com/Sonucs12/readmecodegen/issues)**: Report bugs or suggest new features.
 - **Fork the Repo**: Feel free to fork the repository and submit a Pull Request!
 - **⭐️ Star the Project**: If you use this tool in your README, please consider giving the repository a star to support its development!
-
----
 
 ## 🎯 Wanted: More File Icons!
 
@@ -238,9 +247,6 @@ We currently have icons for **12 file types**. There are hundreds of languages a
 > [!NOTE]
 > Even a simple **colored badge with the extension abbreviation** is a great contribution. Perfect doesn't have to be the enemy of done!
 
----
-
-
 ## 🌐 Try the Live Builder Tool
 
 Don't want to write the URL parameters manually? We have a visual builder!
@@ -249,5 +255,3 @@ Don't want to write the URL parameters manually? We have a visual builder!
 
 Built with ❤️ by the ReadmeCodeGen team.
 [Generate your own visually stunning READMEs at readmecodegen.com!](https://readmecodegen.com)
-
-
