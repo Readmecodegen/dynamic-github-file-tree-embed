@@ -156,7 +156,7 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
   const isDark          = theme === "dark";
   const bgColor         = isDark ? "#0d1117" : "#ffffff";
   const fgColor         = isDark ? "#c9d1d9" : "#24292f";
-  const lineColor       = isDark ? "#30363d" : "#d0d7de";
+  const lineColor       = isDark ? "#30363d" : "#afb8c1";
   const iconColorFolder = isDark ? "#79c0ff" : "#0969da";
   const iconColorFile   = isDark ? "#8b949e" : "#24292f";
 
@@ -203,7 +203,6 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
         `<line x1="${parentX}" y1="${lineStartY}" x2="${parentX}" y2="${nextSiblingCenterY}" class="tree-line" stroke-width="1.5"/>`
       );
     } else {
-      // last child — line only reaches this node's centerY
       svgLines.push(
         `<line x1="${parentX}" y1="${lineStartY}" x2="${parentX}" y2="${centerY}" class="tree-line" stroke-width="1.5"/>`
       );
@@ -269,11 +268,13 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
       .tree-text-folder { fill: #79c0ff; font-weight: bold; }
       .tree-text-file   { fill: #c9d1d9; }
       .tree-header-text { fill: #c9d1d9; }
+      .tree-line        { stroke: #30363d; }
     }
     @media (prefers-color-scheme: light) {
       .tree-text-folder { fill: #0969da; font-weight: bold; }
       .tree-text-file   { fill: #24292f; }
       .tree-header-text { fill: #24292f; }
+      .tree-line        { stroke: #afb8c1; }
     }`
     : "";
 
@@ -287,7 +288,7 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
   const parts: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${computedWidth}" height="${computedHeight}">`,
     `  <style>`,
-    `    text { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: ${FONT_SIZE}px; }`,
+    `    .tree-text-folder, .tree-text-file, .tree-header-text { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: ${FONT_SIZE}px; }`,
     `    .tree-text-folder { fill: ${iconColorFolder}; font-weight: bold; }`,
     `    .tree-text-file   { fill: ${iconColorFile}; }`,
     `    .tree-line        { stroke: ${lineColor}; }`,
