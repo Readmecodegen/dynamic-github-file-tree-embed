@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Icon Preview — file-icons.ts</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f0f6fc;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #8b949e;
+      font-size: 13px;
+      margin-bottom: 32px;
+    }
+
+    .subtitle code {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 12px;
+      color: #79c0ff;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 960px;
+    }
+
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .card h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #8b949e;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #c9d1d9;
+      font-size: 13px;
+      padding: 8px 10px;
+      margin-bottom: 14px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { border-color: #58a6ff; }
+
+    textarea {
+      width: 100%;
+      height: 180px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #c9d1d9;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 12px;
+      padding: 10px;
+      resize: vertical;
+      outline: none;
+      line-height: 1.6;
+      transition: border-color .15s;
+    }
+    textarea:focus { border-color: #58a6ff; }
+
+    button {
+      margin-top: 12px;
+      background: #238636;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    button:hover { background: #2ea043; }
+
+    /* ── Preview ── */
+    .preview-section { display: flex; flex-direction: column; gap: 20px; }
+
+    .bg-strip {
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .bg-dark  { background: #0d1117; border: 1px solid #30363d; }
+    .bg-light { background: #ffffff; border: 1px solid #d0d7de; }
+    .bg-label {
+      font-size: 11px;
+      color: #8b949e;
+      min-width: 40px;
+    }
+
+    .size-group {
+      display: flex;
+      align-items: flex-end;
+      gap: 14px;
+    }
+
+    .icon-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-wrap span {
+      font-size: 10px;
+      color: #8b949e;
+    }
+
+    /* ── File tree mock ── */
+    .tree-mock {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 13px;
+    }
+
+    .tree-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0;
+      color: #c9d1d9;
+    }
+
+    .tree-connector { color: #30363d; }
+
+    /* ── Status ── */
+    #status {
+      margin-top: 10px;
+      font-size: 12px;
+      min-height: 18px;
+    }
+    .ok  { color: #3fb950; }
+    .err { color: #f85149; }
+
+    .tip {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-left: 3px solid #58a6ff;
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #8b949e;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+    .tip code {
+      background: #0d1117;
+      border-radius: 3px;
+      padding: 1px 5px;
+      color: #79c0ff;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🖼️ File Icon Preview</h1>
+<p class="subtitle">
+  Paste your SVG inner content from <code>file-icons.ts</code> to preview it at all sizes before submitting a PR.
+</p>
+
+<div class="layout">
+
+  <!-- ── Input card ── -->
+  <div class="card">
+    <h2>Icon Input</h2>
+
+    <label for="ext">File extension (e.g. <code>go</code>, <code>rs</code>)</label>
+    <input type="text" id="ext" placeholder="go" value="go" />
+
+    <label for="svg-input">
+      SVG inner content — everything <em>inside</em> the <code>&lt;svg&gt;</code> tag
+      (paths, rects, circles, text…)
+    </label>
+    <textarea id="svg-input" spellcheck="false" placeholder='<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="#00ADD8"/>
+<text x="12" y="16.5" font-size="11" font-family="sans-serif"
+      font-weight="bold" fill="white" text-anchor="middle">GO</text>'></textarea>
+
+    <button onclick="render()">▶ Preview</button>
+    <div id="status"></div>
+
+    <div class="tip">
+      💡 Icons render in a <code>0 0 24 24</code> viewBox. Using <code>x="3" width="18"</code>
+      leaves a 3-unit margin — ideal for small sizes. Use
+      <code>text-anchor="middle"</code> and <code>x="12"</code> to centre text.
+    </div>
+  </div>
+
+  <!-- ── Preview card ── -->
+  <div class="card">
+    <h2>Preview</h2>
+    <div class="preview-section">
+
+      <!-- Size comparison -->
+      <div>
+        <label style="margin-bottom:10px">Sizes (as rendered in the file tree)</label>
+        <div class="bg-strip bg-dark">
+          <span class="bg-label">Dark</span>
+          <div class="size-group" id="dark-sizes"></div>
+        </div>
+        <div class="bg-strip bg-light" style="margin-top:10px">
+          <span class="bg-label">Light</span>
+          <div class="size-group" id="light-sizes"></div>
+        </div>
+      </div>
+
+      <!-- File tree mock -->
+      <div>
+        <label style="margin-bottom:10px">In a file tree (emoji style)</label>
+        <div class="tree-mock" id="tree-mock">
+          <div class="tree-row">
+            <span class="tree-connector">├──</span>
+            <span id="tree-icon-1"></span>
+            <span id="tree-filename-1" style="color:#8b949e">myfile.go</span>
+          </div>
+          <div class="tree-row">
+            <span class="tree-connector">├──</span>
+            <span id="tree-icon-2"></span>
+            <span id="tree-filename-2" style="color:#8b949e">another.go</span>
+          </div>
+          <div class="tree-row">
+            <span class="tree-connector">└──</span>
+            <span id="tree-icon-3"></span>
+            <span id="tree-filename-3" style="color:#8b949e">README.md</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const SIZES = [12, 14, 16, 20, 24];
+
+  function makeSvg(inner, size) {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+  }
+
+  function render() {
+    const inner = document.getElementById('svg-input').value.trim();
+    const ext   = document.getElementById('ext').value.trim() || 'file';
+    const status = document.getElementById('status');
+
+    if (!inner) {
+      status.className = 'err';
+      status.textContent = '⚠ Please paste some SVG content first.';
+      return;
+    }
+
+    // Validate by attempting to parse
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(`<svg xmlns="http://www.w3.org/2000/svg">${inner}</svg>`, 'image/svg+xml');
+      const err = doc.querySelector('parsererror');
+      if (err) throw new Error(err.textContent);
+    } catch (e) {
+      status.className = 'err';
+      status.textContent = '✗ Invalid SVG: ' + e.message.slice(0, 80);
+      return;
+    }
+
+    status.className = 'ok';
+    status.textContent = `✓ Valid SVG for ".${ext}" — looking good!`;
+
+    // Size rows
+    ['dark-sizes', 'light-sizes'].forEach(id => {
+      const el = document.getElementById(id);
+      el.innerHTML = '';
+      SIZES.forEach(s => {
+        const wrap = document.createElement('div');
+        wrap.className = 'icon-wrap';
+        wrap.innerHTML = makeSvg(inner, s) + `<span>${s}px</span>`;
+        el.appendChild(wrap);
+      });
+    });
+
+    // Tree mock
+    const treeSize = 16;
+    const svgHtml = makeSvg(inner, treeSize);
+    const fname = `myfile.${ext}`;
+    document.getElementById('tree-icon-1').innerHTML = svgHtml;
+    document.getElementById('tree-icon-2').innerHTML = svgHtml;
+    document.getElementById('tree-filename-1').textContent = fname;
+    document.getElementById('tree-filename-2').textContent = `another.${ext}`;
+    // third row stays as .md (default icon)
+    document.getElementById('tree-icon-3').innerHTML =
+      `<svg width="${treeSize}" height="${treeSize}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+              fill="none" stroke="#8b949e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="14 2 14 8 20 8" fill="none" stroke="#8b949e" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
+  }
+
+  // Auto-render on page load with placeholder
+  window.addEventListener('load', () => {
+    document.getElementById('svg-input').value =
+      '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="#00ADD8"/>' +
+      '<text x="12" y="16.5" font-size="11" font-family="sans-serif" font-weight="bold" fill="white" text-anchor="middle">GO</text>';
+    document.getElementById('ext').value = 'go';
+    render();
+  });
+
+  // Re-render on Ctrl+Enter
+  document.getElementById('svg-input').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') render();
+  });
+</script>
+</body>
+</html>
