@@ -1,3 +1,5 @@
+import { getFileIcon } from "./file-icons";
+
 export interface GitHubTreeNode {
   path: string;
   type: "blob" | "tree";
@@ -24,6 +26,7 @@ export interface SVGRenderOptions {
   transparentBg: boolean;
   showHeader: boolean;
   showBorder: boolean;
+  showFileIcons: boolean;
   avatarBase64: string;
   isTruncated: boolean;
 }
@@ -141,7 +144,7 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
   const {
     repoName, owner, maxDepth, foldersOnly, includeHidden, skippedIds,
     theme, style, fontSizeParam, transparentBg, showHeader, showBorder,
-    avatarBase64, isTruncated,
+    showFileIcons, avatarBase64, isTruncated,
   } = opts;
 
   const nodes = flattenTreeForSVG(
@@ -160,7 +163,7 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
   // layout — all values scaled relative to font size
   const FONT_SIZE      = isNaN(fontSizeParam) ? 16 : Math.max(10, Math.min(24, fontSizeParam));
   const scale          = FONT_SIZE / 14;
-  const HEADER_HEIGHT  = showHeader ? Math.round(50 * scale) : 0;
+  const HEADER_HEIGHT  = Math.round(30 * scale);
   const PADDING_X      = 40;
   const PADDING_Y      = 40 + HEADER_HEIGHT;
   const PADDING_BOTTOM = 40;
@@ -222,9 +225,20 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
     let textX = x;
     if (!node.isTruncatedIndicator && style !== "ascii") {
       const isFolder = node.item.type === "folder";
+      let iconInner = isFolder ? ICONS.folder : ICONS.file;
+      let color = isFolder ? iconColorFolder : iconColorFile;
+
+      if (!isFolder && showFileIcons) {
+        const specificIcon = getFileIcon(node.item.name);
+        if (specificIcon) {
+          iconInner = specificIcon;
+          color = iconColorFile;
+        }
+      }
+
       svgIcons.push(
-        `<g transform="translate(${x},${centerY - ICON_SIZE / 2})" color="${isFolder ? iconColorFolder : iconColorFile}">` +
-        `<svg width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="0 0 24 24">${isFolder ? ICONS.folder : ICONS.file}</svg></g>`
+        `<g transform="translate(${x},${centerY - ICON_SIZE / 2})" color="${color}">` +
+        `<svg width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="0 0 24 24">${iconInner}</svg></g>`
       );
       textX += ICON_SIZE + Math.round(6 * scale);
     }
@@ -288,11 +302,12 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
     `  </g>`,
   ];
 
-  // header: circular avatar + "owner / repo" label
+  // header: circular avatar + "owner / repo" label, OR default text
+  const headerY    = Math.round(30 * scale);
+  let headerX      = PADDING_X;
+
   if (showHeader) {
-    const headerY    = Math.round(30 * scale);
     const avatarSize = Math.round(28 * scale);
-    let headerX      = PADDING_X;
 
     if (avatarBase64) {
       parts.push(
@@ -304,6 +319,10 @@ export function generateFileTreeSvg(flatTree: GitHubTreeNode[], opts: SVGRenderO
 
     parts.push(
       `  <text x="${headerX}" y="${headerY}" dominant-baseline="central" class="tree-header-text">${escapeXml(owner)} / ${escapeXml(repoName)}</text>`
+    );
+  } else {
+    parts.push(
+      `  <text x="${headerX}" y="${headerY}" dominant-baseline="central" class="tree-header-text">File Tree Structure</text>`
     );
   }
 
