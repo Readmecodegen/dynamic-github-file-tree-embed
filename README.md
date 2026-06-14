@@ -232,7 +232,7 @@ We currently have icons for **12 file types**. There are hundreds of languages a
 
 1. Fork the repo and open [`src/app/api/file-tree-embed/file-icons.ts`](src/app/api/file-tree-embed/file-icons.ts).
 2. Add one line to `FILE_ICONS_MAP` — the key is the extension, the value is raw SVG inner content (24×24 viewBox).
-3. **Preview your icon** — open [[`icon-preview.html`](icon-preview.html)](https://readmecodegen.github.io/dynamic-github-file-tree-embed/icon-preview.html) directly in your browser (no server needed!), paste your SVG string, and see it rendered at all sizes and in both light/dark mode before submitting.
+3. **Preview your icon** — open the **[Live Icon Preview Tool](https://readmecodegen.github.io/dynamic-github-file-tree-embed/icon-preview.html)**, paste your SVG string, and see it rendered at all sizes and in both light/dark mode before submitting.
 4. Open a Pull Request with a title like `feat: add .go icon` — we'll merge it fast!
 
 > [!NOTE]
