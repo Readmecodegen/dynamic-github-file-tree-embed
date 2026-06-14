@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
           userAccessToken,
           {
             tags: [`tree-${owner}-${repoName}`],
-            revalidate: 3600, // 1 hour default cache
+            revalidate: 7200, // 2 hours default cache
           }
         );
         resolvedBranch ??= repoInfo?.default_branch ?? "main";
@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
       userAccessToken,
       {
         tags: [`tree-${owner}-${repoName}`],
-        revalidate: 3600, // 1 hour default cache
+        revalidate: 7200, // 2 hours default cache
       }
     );
 
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
         status: 304,
         headers: {
           "ETag": etag,
-          "Cache-Control": "no-cache, must-revalidate",
+          "Cache-Control": "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
           "Content-Type": "image/svg+xml",
         },
       });
@@ -120,7 +120,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         "Content-Type": "image/svg+xml",
-        "Cache-Control": "no-cache, must-revalidate",
+        "Cache-Control": "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
         "ETag": etag,
       },
     });
